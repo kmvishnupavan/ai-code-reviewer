@@ -25,10 +25,6 @@ export default async function DashboardLayout({
                             <h1 className="text-2xl font-bold text-white tracking-tight">Welcome, {user.email?.split('@')[0]}</h1>
                             <p className="text-gray-400 text-sm mt-1">Here is your code review workspace.</p>
                         </div>
-
-                        <div className="px-4 py-1.5 bg-blue-500/10 border border-blue-500/20 rounded-full text-blue-400 text-sm font-medium">
-                            Pro Plan
-                        </div>
                     </div>
 
                     {children}

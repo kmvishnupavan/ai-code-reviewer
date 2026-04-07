@@ -193,7 +193,11 @@ export default function NewReviewPage() {
         {/* Results Pane */}
         <div className={`flex flex-col h-full ${activeTab === 'results' ? 'flex' : 'hidden lg:flex'}`}>
           <div className="flex-1 bg-[#15181e] border border-[#262a33] rounded-xl p-6 overflow-y-auto">
-            <ReviewResults results={results} loading={loading} />
+            <ReviewResults 
+              results={results} 
+              loading={loading} 
+              onCopy={(newCode) => setCode(newCode)}
+            />
           </div>
         </div>
 

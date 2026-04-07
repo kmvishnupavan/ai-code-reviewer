@@ -30,8 +30,8 @@ export default function LoginPage() {
 
                 <div className="relative">
                     <div className="text-center mb-8">
-                        <h1 className="text-3xl font-bold tracking-tight text-white mb-2">Welcome back</h1>
-                        <p className="text-gray-400 text-sm">Enter your credentials to access the AI Code Reviewer</p>
+                        <h1 className="text-3xl font-bold tracking-tight text-white mb-2">Welcome Back</h1>
+                        <p className="text-gray-400 text-sm">Enter your credentials to access Critique AI</p>
                     </div>
 
                     <form action={formAction} className="space-y-5">

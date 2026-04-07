@@ -194,6 +194,28 @@ export default function HistoryDetailsPage() {
                     <h3 className="text-lg font-medium text-white mb-4">AI Feedback</h3>
                     <div className="flex-1 overflow-y-auto pr-2 custom-scrollbar space-y-6 max-h-[500px]">
 
+                        {/* Complexity Analysis */}
+                        <div className="grid grid-cols-2 gap-4">
+                            <div className="bg-[#1c2230]/50 border border-[#262a33] p-4 rounded-xl flex items-center gap-4">
+                                <div className="p-2 bg-blue-500/10 rounded-lg">
+                                    <Clock className="w-5 h-5 text-blue-400" />
+                                </div>
+                                <div>
+                                    <p className="text-xs text-gray-500 uppercase font-bold tracking-wider">Time</p>
+                                    <p className="text-sm font-mono text-blue-300">{review.complexity_time || "N/A"}</p>
+                                </div>
+                            </div>
+                            <div className="bg-[#1c2230]/50 border border-[#262a33] p-4 rounded-xl flex items-center gap-4">
+                                <div className="p-2 bg-purple-500/10 rounded-lg">
+                                    <Code2 className="w-5 h-5 text-purple-400" />
+                                </div>
+                                <div>
+                                    <p className="text-xs text-gray-500 uppercase font-bold tracking-wider">Space</p>
+                                    <p className="text-sm font-mono text-purple-300">{review.complexity_space || "N/A"}</p>
+                                </div>
+                            </div>
+                        </div>
+
                         {review.syntax_errors && review.syntax_errors.length > 0 && (
                             <div className="space-y-3">
                                 <h4 className="flex items-center gap-2 text-sm font-semibold text-red-500 uppercase tracking-wider">
@@ -220,6 +242,20 @@ export default function HistoryDetailsPage() {
                                             <ReactMarkdown remarkPlugins={[remarkGfm]}>{tip}</ReactMarkdown>
                                         </div>
                                     ))}
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Optimized Code Section */}
+                        {review.optimized_code && (
+                            <div className="space-y-3">
+                                <h4 className="flex items-center gap-2 text-sm font-semibold text-emerald-500 uppercase tracking-wider">
+                                    <CheckCircle2 className="w-4 h-4" /> AI Optimized Code
+                                </h4>
+                                <div className="relative group">
+                                    <pre className="bg-[#0f1115] border border-[#262a33] rounded-xl p-4 overflow-x-auto text-xs font-mono text-emerald-100/80 leading-relaxed shadow-lg">
+                                        <code>{review.optimized_code}</code>
+                                    </pre>
                                 </div>
                             </div>
                         )}

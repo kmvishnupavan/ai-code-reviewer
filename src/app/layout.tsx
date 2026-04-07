@@ -6,7 +6,7 @@ import LiveBackground from '@/components/LiveBackground'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'AI Code Reviewer',
+  title: 'Critique AI',
   description: 'An industry-grade AI-powered code reviewer built for students.',
 }
 
@@ -22,9 +22,9 @@ export default function RootLayout({
         <header className="fixed top-0 w-full h-16 border-b border-[#262a33] bg-[#0f1115]/80 backdrop-blur-md z-50 flex items-center px-6">
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold">
-              AI
+              C
             </div>
-            <h1 className="text-xl font-semibold tracking-tight text-white drop-shadow-sm">Code Reviewer</h1>
+            <h1 className="text-xl font-semibold tracking-tight text-white drop-shadow-sm">Critique AI</h1>
           </div>
           <div className="ml-auto flex items-center gap-4">
             <a

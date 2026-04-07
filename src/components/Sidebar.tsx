@@ -20,9 +20,9 @@ export default function Sidebar() {
       <div className="p-6 border-b border-[#262a33]">
         <div className="flex items-center gap-2">
           <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold shrink-0">
-            AI
+            C
           </div>
-          <h1 className="text-xl font-semibold tracking-tight text-white drop-shadow-sm">Reviewer</h1>
+          <h1 className="text-xl font-semibold tracking-tight text-white drop-shadow-sm">Critique AI</h1>
         </div>
       </div>
 
