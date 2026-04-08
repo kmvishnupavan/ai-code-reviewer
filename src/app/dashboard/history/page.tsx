@@ -54,51 +54,54 @@ export default async function HistoryPage() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 overflow-y-auto pb-8">
                 {reviews.map((review) => {
-                    const isGood = review.score >= 80
-                    const isOk = review.score >= 50 && review.score < 80
+                    const score = review.overall_score || 0
+                    const isGood = score >= 80
+                    const isOk = score >= 50 && score < 80
 
                     return (
-                        <Link href={`/dashboard/history/${review.id}`} key={review.id} className="bg-[#15181e] border border-[#262a33] hover:border-gray-600 rounded-xl p-6 transition-all group flex flex-col max-h-[400px] cursor-pointer block text-left">
-                            <div className="flex items-center justify-between mb-4">
+                        <Link href={`/dashboard/history/${review.id}`} key={review.id} className="bg-[#15181e] border border-[#262a33] hover:border-gray-600 rounded-xl p-6 transition-all group flex flex-col max-h-[400px] cursor-pointer block text-left relative overflow-hidden">
+                            <div className="absolute top-0 right-0 px-3 py-1 bg-blue-500/10 text-blue-400 text-[10px] uppercase font-bold border-b border-l border-[#262a33] tracking-tighter">
+                                {review.review_mode?.replace('_', ' ') || 'standard'}
+                            </div>
+
+                            <div className="flex items-center justify-between mb-4 mt-2">
                                 <div className="flex items-center gap-3">
-                                    <div className={`w-12 h-12 rounded-full flex items-center justify-center font-bold text-lg border-2 ${isGood ? 'border-green-500/30 text-green-500 bg-green-500/10' :
-                                        isOk ? 'border-yellow-500/30 text-yellow-500 bg-yellow-500/10' :
-                                            'border-red-500/30 text-red-500 bg-red-500/10'
+                                    <div className={`w-12 h-12 rounded-full flex items-center justify-center font-black text-lg border-2 ${isGood ? 'border-green-500/30 text-green-500 bg-green-500/10 shadow-lg shadow-green-500/5' :
+                                        isOk ? 'border-yellow-500/30 text-yellow-500 bg-yellow-500/10 shadow-lg shadow-yellow-500/5' :
+                                            'border-red-500/30 text-red-500 bg-red-500/10 shadow-lg shadow-red-500/5'
                                         }`}>
-                                        {review.score}
+                                        {score}
                                     </div>
                                     <div>
-                                        <h3 className="text-white font-medium capitalize">{review.language}</h3>
-                                        <div className="flex items-center gap-1.5 text-xs text-gray-500">
-                                            <Clock className="w-3.5 h-3.5" />
+                                        <h3 className="text-white font-bold capitalize text-sm">{review.language}</h3>
+                                        <div className="flex items-center gap-1.5 text-[10px] text-gray-500 font-bold uppercase tracking-widest">
+                                            <Clock className="w-3 h-3" />
                                             {new Date(review.created_at).toLocaleDateString()}
                                         </div>
                                     </div>
                                 </div>
-                                <ChevronRight className="w-5 h-5 text-gray-500 group-hover:text-white transition-colors" />
+                                <ChevronRight className="w-5 h-5 text-gray-500 group-hover:text-white group-hover:translate-x-1 transition-all" />
                             </div>
 
                             <div className="flex-1 overflow-hidden relative mb-4">
-                                {/* Fade out bottom of code snippet */}
-                                <div className="absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-[#1c2028] to-transparent z-10" />
-                                <pre className="p-4 bg-[#1c2028] rounded-lg text-xs text-gray-300 font-mono h-full overflow-hidden whitespace-pre-wrap break-words">
+                                <div className="absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-[#15181e] to-transparent z-10" />
+                                <pre className="p-3 bg-black/20 rounded-lg text-xs text-gray-400 font-mono h-full overflow-hidden whitespace-pre-wrap break-words border border-white/5">
                                     {review.code_snippet}
                                 </pre>
                             </div>
 
                             <div className="grid grid-cols-2 gap-2 mt-auto">
-                                <div className="bg-[#1c2028] rounded-md px-3 py-2 flex items-center justify-between">
-                                    <span className="text-xs text-gray-400">Issues</span>
-                                    <span className="text-sm font-medium text-red-400 flex items-center gap-1">
+                                <div className="bg-white/5 rounded-lg px-3 py-2 flex items-center justify-between border border-white/5">
+                                    <span className="text-[10px] uppercase font-bold text-gray-500">Issues</span>
+                                    <span className="text-sm font-bold text-red-400 flex items-center gap-1">
                                         <AlertTriangle className="w-3.5 h-3.5" />
-                                        {(review.syntax_errors?.length || 0) + (review.logic_flaws?.length || 0)}
+                                        {review.issues?.length || 0}
                                     </span>
                                 </div>
-                                <div className="bg-[#1c2028] rounded-md px-3 py-2 flex items-center justify-between">
-                                    <span className="text-xs text-gray-400">Tips</span>
-                                    <span className="text-sm font-medium text-blue-400 flex items-center gap-1">
-                                        <CheckCircle2 className="w-3.5 h-3.5" />
-                                        {review.optimization_tips?.length || 0}
+                                <div className="bg-white/5 rounded-lg px-3 py-2 flex items-center justify-between border border-white/5">
+                                    <span className="text-[10px] uppercase font-bold text-gray-500">Quality</span>
+                                    <span className="text-sm font-bold text-blue-400">
+                                        {review.quality_score || 0}%
                                     </span>
                                 </div>
                             </div>

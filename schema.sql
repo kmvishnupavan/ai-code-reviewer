@@ -21,10 +21,35 @@ create table public.reviews (
   user_id uuid references public.profiles(id) on delete cascade not null, -- The user who submitted the code
   code_snippet text not null, -- The code submitted for review
   language text not null, -- e.g., 'javascript', 'python'
-  score integer constraint score_range check (score >= 0 and score <= 100), -- 0-100 quality score
-  syntax_errors jsonb default '[]'::jsonb, -- Array of strings/objects representing syntax errors
-  logic_flaws jsonb default '[]'::jsonb, -- Array of strings/objects for logic flaws
-  optimization_tips jsonb default '[]'::jsonb, -- Array of strings/objects for tips
+  review_mode text not null default 'bug_detection', -- 'bug_detection', 'optimization', 'interview', 'beginner'
+  
+  -- Granular Scores
+  overall_score integer constraint overall_score_range check (overall_score >= 0 and overall_score <= 100),
+  readability_score integer,
+  performance_score integer,
+  quality_score integer,
+  bug_risk_score integer,
+  maintainability_score integer,
+  scalability_score integer,
+  interview_readiness_score integer,
+  code_level text, -- 'Beginner', 'Intermediate', 'Industry-ready'
+  
+  -- Structured Feedback
+  issues jsonb default '[]'::jsonb, 
+  explanation text,
+  suggested_fixes text,
+  optimized_code text,
+  complexity jsonb, -- e.g. {"time": "O(n)", "space": "O(1)"}
+  best_practices jsonb default '[]'::jsonb,
+  
+  -- Mode-specific data
+  interview_insights jsonb,
+  beginner_notes jsonb,
+  
+  -- IEEE Upgrade: Comparison metrics
+  comparison_metrics jsonb, -- e.g. {"performance_gain": 40, "lines_reduced": 10}
+  hybrid_report jsonb, -- Breakdown of Static vs AI issues
+  
   created_at timestamp with time zone default timezone('utc'::text, now()) not null
 );
 
