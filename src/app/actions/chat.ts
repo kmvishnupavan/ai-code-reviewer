@@ -7,7 +7,7 @@ export async function askMentor(code: string, message: string, history: { role: 
     if (!geminiKey) throw new Error('No Gemini API key.');
 
     const genAI = new GoogleGenerativeAI(geminiKey);
-    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+    const model = genAI.getGenerativeModel({ model: "gemini-3.8-flash" });
 
     const chat = model.startChat({
         history: [

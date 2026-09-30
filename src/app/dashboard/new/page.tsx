@@ -156,7 +156,7 @@ export default function NewReviewPage() {
         <div className={`flex flex-col h-full ${activeTab === 'results' ? 'flex' : 'hidden lg:flex'}`}>
           <div className="flex-1 bg-[#101217] border border-[#262a33] rounded-[2rem] overflow-hidden shadow-2xl relative flex flex-col">
             <div className="flex-1 overflow-y-auto p-8 custom-scrollbar">
-              <ReviewResults results={results} loading={loading} onCopy={(newCode) => setCode(newCode)} />
+              <ReviewResults results={results} loading={loading} error={error} onCopy={(newCode) => setCode(newCode)} />
             </div>
             
             {/* AI Chat Button floating inside results */}

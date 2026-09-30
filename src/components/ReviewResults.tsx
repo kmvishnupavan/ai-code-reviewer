@@ -7,7 +7,7 @@ import remarkGfm from 'remark-gfm'
 import { ResponsiveContainer, Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Tooltip } from 'recharts'
 import { useState } from 'react'
 
-export default function ReviewResults({ results, loading, onCopy }: { results: ReviewResponse | null, loading: boolean, onCopy?: (code: string) => void }) {
+export default function ReviewResults({ results, loading, error, onCopy }: { results: ReviewResponse | null, loading: boolean, error?: string | null, onCopy?: (code: string) => void }) {
     const [activeSection, setActiveSection] = useState<'overview' | 'comparison' | 'issues' | 'mentor'>('overview')
     const [viewMode, setViewMode] = useState<'split' | 'single'>('split')
 
@@ -24,6 +24,25 @@ export default function ReviewResults({ results, loading, onCopy }: { results: R
                          <span className="px-2 py-0.5 bg-blue-500/10 text-blue-400 text-[10px] font-bold rounded border border-blue-500/20 uppercase tracking-widest animate-pulse">Static Audit</span>
                          <span className="px-2 py-0.5 bg-purple-500/10 text-purple-400 text-[10px] font-bold rounded border border-purple-500/20 uppercase tracking-widest animate-pulse delay-75">AI Mentorship</span>
                     </div>
+                </div>
+            </div>
+        )
+    }
+
+    if (error) {
+        return (
+            <div className="h-full flex flex-col items-center justify-center text-center space-y-6 p-8 animate-in zoom-in-95 duration-500">
+                <div className="w-16 h-16 bg-red-500/10 border border-red-500/20 rounded-2xl flex items-center justify-center">
+                    <AlertTriangle className="w-8 h-8 text-red-400" />
+                </div>
+                <div className="space-y-3 max-w-md">
+                    <h3 className="text-lg font-bold text-white tracking-tight">Review Could Not Complete</h3>
+                    <div className="text-xs text-red-300/90 leading-relaxed font-mono bg-red-500/10 p-4 rounded-xl border border-red-500/20 text-left overflow-auto max-h-32">
+                        {error}
+                    </div>
+                    <p className="text-[11px] text-gray-400 leading-relaxed">
+                        If running on Vercel, ensure <code className="text-blue-400 font-mono">GROQ_API_KEY</code> or <code className="text-blue-400 font-mono">GEMINI_API_KEY</code> is configured in <strong>Vercel Project Settings &gt; Environment Variables</strong>.
+                    </p>
                 </div>
             </div>
         )
