@@ -141,31 +141,59 @@ Return a STRICT JSON response with this structure:
 
     const systemInstruction = `${baseInstruction}\n\n${SYSTEM_PROMPTS[mode]}\n\nReturn ONLY raw JSON.`;
 
-    let reviewData: ReviewResponse;
+    let reviewData: ReviewResponse | null = null;
 
-    try {
-        if (groqKey) {
-            const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
-                method: "POST",
-                headers: { "Authorization": `Bearer ${groqKey}`, "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    model: "llama-3.3-70b-versatile",
-                    messages: [{ role: "system", content: systemInstruction }, { role: "user", content: `Review this ${language} code:\n\n${code}` }],
-                    response_format: { type: "json_object" },
-                    temperature: 0.1,
-                }),
-            });
-            if (response.ok) {
-                const data = await response.json();
-                reviewData = JSON.parse(data.choices[0].message.content);
-            } else throw new Error();
-        } else throw new Error();
-    } catch {
-        if (!geminiKey) throw new Error('No API keys.');
+    // 1. Try Groq API first
+    if (groqKey) {
+        const groqModels = ["openai/gpt-oss-120b", "openai/gpt-oss-20b", "qwen/qwen3.8-27b"];
+        for (const model of groqModels) {
+            try {
+                const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+                    method: "POST",
+                    headers: { "Authorization": `Bearer ${groqKey}`, "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        model: model,
+                        messages: [{ role: "system", content: systemInstruction }, { role: "user", content: `Review this ${language} code:\n\n${code}` }],
+                        response_format: { type: "json_object" },
+                        temperature: 0.1,
+                    }),
+                });
+                if (response.ok) {
+                    const data = await response.json();
+                    const content = data.choices[0].message.content;
+                    reviewData = JSON.parse(content);
+                    break;
+                }
+            } catch (err) {
+                console.warn(`Groq model ${model} failed, trying next...`, err);
+            }
+        }
+    }
+
+    // 2. Fallback to Gemini if Groq didn't return data
+    if (!reviewData && geminiKey) {
+        const geminiModels = ["gemini-3.8-flash", "gemini-3.1-pro-preview"];
         const genAI = new GoogleGenerativeAI(geminiKey);
-        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash", generationConfig: { responseMimeType: "application/json" } });
-        const result = await model.generateContent(`${systemInstruction}\n\nCode:\n${code}`);
-        reviewData = JSON.parse(result.response.text());
+        for (const m of geminiModels) {
+            try {
+                const model = genAI.getGenerativeModel({ model: m, generationConfig: { responseMimeType: "application/json" } });
+                const result = await model.generateContent(`${systemInstruction}\n\nCode:\n${code}`);
+                let rawText = result.response.text().trim();
+                const start = rawText.indexOf('{');
+                const end = rawText.lastIndexOf('}');
+                if (start !== -1 && end !== -1) {
+                    rawText = rawText.substring(start, end + 1);
+                }
+                reviewData = JSON.parse(rawText);
+                break;
+            } catch (err) {
+                console.warn(`Gemini model ${m} failed, trying next...`, err);
+            }
+        }
+    }
+
+    if (!reviewData) {
+        throw new Error('All AI model providers failed to respond. Please check your API keys or try again shortly.');
     }
 
     // Merge static analysis results (Hybrid logic)
